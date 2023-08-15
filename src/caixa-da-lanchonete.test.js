@@ -48,4 +48,23 @@ describe('CaixaDaLanchonete', () => {
         ['queijo com outro item', 'debito', 'Item extra não pode ser pedido sem o principal', ['cafe,1', 'queijo,1']],
     ])('compra %p em %p deve resultar em %p', (_, formaDePagamento, resultadoEsperado, itens) =>
         validaTeste(formaDePagamento, resultadoEsperado, itens));
+
+    test.each([
+        ['dinheiro', 'R$ 28,02', ['cafe,4', 'sanduiche,3', 'queijo,2', 'cafe,-2']],
+        ['credito', 'R$ 30,39', ['cafe,4', 'sanduiche,3', 'queijo,2', 'cafe,-2']],
+        ['debito', 'R$ 29,50', ['cafe,4', 'sanduiche,3', 'queijo,2', 'cafe,-2']],
+    ])('compra de múltiplas quantidades com remoção de itens em %p deve resultar em %p', validaTeste);
+
+    test.each([
+        ['dinheiro', 'Não há itens suficientes no carrinho', ['cafe,4', 'cafe,-6']],
+        ['credito', 'Não há itens suficientes no carrinho', ['cafe,4', 'cafe,-6']],
+        ['debito', 'Não há itens suficientes no carrinho', ['cafe,4', 'cafe,-6']],
+    ])('remoção de mais itens do que presentes no carrinho em %p deve resultar em %p', validaTeste);
+
+    test.each([
+        ['dinheiro', 'Remova os itens principais antes dos extras', ['sanduiche,3', 'queijo,2', 'sanduiche,-3']],
+        ['credito', 'Remova os itens principais antes dos extras', ['sanduiche,3', 'queijo,2', 'sanduiche,-3']],
+        ['debito', 'Remova os itens principais antes dos extras', ['sanduiche,3', 'queijo,2', 'sanduiche,-3']],
+    ])('remoção de extras antes dos itens principais em %p deve resultar em %p', validaTeste);
+
 });
